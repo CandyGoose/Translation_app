@@ -1,7 +1,9 @@
 package com.candygoose.translationservice.service;
 
+import com.candygoose.translationservice.model.TranslationRecord;
 import com.candygoose.translationservice.model.TranslationRequest;
 import com.candygoose.translationservice.model.TranslationResponse;
+import com.candygoose.translationservice.repository.TranslationRepository;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +21,12 @@ public class YandexTranslationService implements TranslationService {
     private String yandexApiKey;
 
     private final RestTemplate restTemplate;
+    private final TranslationRepository translationRepository;
 
-    public YandexTranslationService(RestTemplate restTemplate) {
+    public YandexTranslationService(RestTemplate restTemplate,
+                                    TranslationRepository translationRepository) {
         this.restTemplate = restTemplate;
+        this.translationRepository = translationRepository;
     }
 
     @Override
@@ -47,7 +52,12 @@ public class YandexTranslationService implements TranslationService {
         }
 
         String translatedText = extractTranslatedText(responseEntity.getBody());
-        return new TranslationResponse(translatedText);
+
+        TranslationResponse response = new TranslationResponse(translatedText);
+
+        TranslationRecord record = new TranslationRecord(ipAddress, request.getText(), response.getResponseText());
+        translationRepository.save(record);
+        return response;
     }
 
     private String extractTranslatedText(String responseBody) {
