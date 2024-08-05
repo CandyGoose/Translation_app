@@ -2,13 +2,13 @@ package com.candygoose.translationservice.config;
 
 import com.candygoose.translationservice.exception.InvalidLanguageException;
 import com.candygoose.translationservice.exception.TranslationServiceException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
 
