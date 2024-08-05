@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-
 @Configuration
 public class RestTemplateConfig {
 

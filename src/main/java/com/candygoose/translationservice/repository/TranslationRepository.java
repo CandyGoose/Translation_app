@@ -2,6 +2,8 @@ package com.candygoose.translationservice.repository;
 
 import com.candygoose.translationservice.model.TranslationRecord;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +14,8 @@ import java.sql.SQLException;
 
 @Repository
 public class TranslationRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(TranslationRepository.class);
 
     @Value("${spring.datasource.url}")
     private String url;
@@ -38,10 +42,10 @@ public class TranslationRepository {
                 "translated_text TEXT, " +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement createTableStatement = connection.prepareStatement(createTableQuery)) {
+            PreparedStatement createTableStatement = connection.prepareStatement(createTableQuery)) {
             createTableStatement.executeUpdate();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+        } catch (SQLException e) {
+            logger.error("Ошибка при создании таблицы: ", e);
         }
     }
 
@@ -49,15 +53,24 @@ public class TranslationRepository {
         String query = "INSERT INTO " + table + " (ip_address, original_text, translated_text) VALUES (?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, record.getIpAddress());
-            preparedStatement.setString(2, record.getOriginalText());
-            preparedStatement.setString(3, record.getTranslatedText());
+            preparedStatement.setString(2, sanitizeText(record.getOriginalText()));
+            preparedStatement.setString(3, sanitizeText(record.getTranslatedText()));
 
-            preparedStatement.executeUpdate();
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                logger.info("Запись перевода успешна сохранена: {}", record);
+            } else {
+                logger.warn("Ни одной строки не было затронуто при сохранении записи перевода: {}", record);
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.error("Ошибка при сохранении записи перевода: {}", record, e);
         }
+    }
+
+    private String sanitizeText(String text) {
+        return text.replaceAll("[\\x00\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]", "").trim();
     }
 }
