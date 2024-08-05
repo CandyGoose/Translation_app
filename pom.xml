@@ -13,7 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>translation-service</name>
-    <description>Translation Service</description>
+    <description>Translation Service using Yandex API</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -42,6 +42,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.34</version>
+        </dependency>
+
+        <!-- Gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.9</version>
         </dependency>
 
         <!-- JUnit 5 -->
