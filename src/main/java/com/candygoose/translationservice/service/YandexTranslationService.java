@@ -25,7 +25,7 @@ public class YandexTranslationService implements TranslationService {
     }
 
     @Override
-    public TranslationResponse translate(TranslationRequest request) {
+    public TranslationResponse translate(TranslationRequest request, String ipAddress) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Api-Key " + yandexApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -43,7 +43,7 @@ public class YandexTranslationService implements TranslationService {
         );
 
         if (responseEntity.getBody() == null) {
-            throw new RuntimeException("Empty response from translation service");
+            throw new RuntimeException("Получен пустой ответ");
         }
 
         String translatedText = extractTranslatedText(responseEntity.getBody());
@@ -56,7 +56,7 @@ public class YandexTranslationService implements TranslationService {
             JsonObject translationNode = rootNode.getAsJsonArray("translations").get(0).getAsJsonObject();
             return translationNode.get("text").getAsString();
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing translation response", e);
+            throw new RuntimeException("Ошибка выполнения задачи перевода", e);
         }
     }
 }

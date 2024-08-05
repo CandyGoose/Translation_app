@@ -4,5 +4,5 @@ import com.candygoose.translationservice.model.TranslationRequest;
 import com.candygoose.translationservice.model.TranslationResponse;
 
 public interface TranslationService {
-    TranslationResponse translate(TranslationRequest request);
+    TranslationResponse translate(TranslationRequest request, String ipAddress);
 }

@@ -23,7 +23,7 @@ class TranslationServiceApplicationTests {
     @Test
     void testBasicTranslation() {
         TranslationRequest request = new TranslationRequest("en", "ru", "World");
-        TranslationResponse response = translationService.translate(request);
+        TranslationResponse response = translationService.translate(request, "127.0.0.1");
 
         assertNotNull(response, "Ответ не должен быть null");
         assertEquals("Мир", response.getResponseText(), "Перевод должен соответствовать ожидаемому результату");
