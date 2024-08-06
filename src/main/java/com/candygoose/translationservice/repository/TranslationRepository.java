@@ -26,8 +26,8 @@ public class TranslationRepository {
     @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${spring.datasource.table}")
-    private String table;
+    @Value("${spring.datasource.table.name}")
+    private String tableName;
 
     @PostConstruct
     private void initializeDatabase() {
@@ -35,7 +35,7 @@ public class TranslationRepository {
     }
 
     private void createTableIfNotExists() {
-        String createTableQuery = "CREATE TABLE IF NOT EXISTS " + table + " (" +
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
                 "id SERIAL PRIMARY KEY, " +
                 "ip_address VARCHAR(45), " +
                 "original_text TEXT, " +
@@ -50,7 +50,7 @@ public class TranslationRepository {
     }
 
     public void save(TranslationRecord record) {
-        String query = "INSERT INTO " + table + " (ip_address, original_text, translated_text) VALUES (?, ?, ?)";
+        String query = "INSERT INTO " + tableName + " (ip_address, original_text, translated_text) VALUES (?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
