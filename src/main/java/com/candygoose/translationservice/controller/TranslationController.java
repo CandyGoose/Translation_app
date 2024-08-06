@@ -34,8 +34,8 @@ public class TranslationController {
             @RequestParam String targetLanguage,
             @RequestParam String text,
             HttpServletRequest httpRequest) {
-        String safeSourceLanguage = StringEscapeUtils.escapeHtml4(sourceLanguage);
-        String safeTargetLanguage = StringEscapeUtils.escapeHtml4(targetLanguage);
+        String safeSourceLanguage = StringEscapeUtils.escapeHtml4(sourceLanguage.replaceAll("\\t", "").trim());
+        String safeTargetLanguage = StringEscapeUtils.escapeHtml4(targetLanguage.replaceAll("\\t", "").trim());
         String safeText = StringEscapeUtils.escapeHtml4(text);
 
         if (safeSourceLanguage.isBlank() || safeTargetLanguage.isBlank() || safeText.isBlank()) {
